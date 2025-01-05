@@ -1,4 +1,5 @@
-# Understanding Bits, Registers, Logic Operations, GPIO, Interrupts, Timers, and PWM in Arduino
+# Arduino AVR-C Register Level Programming
+
 
 ## Bits in Arduino
 Arduino operates on an **8-bit architecture** for its registers and ports. Each register consists of 8 bits, as shown below:
