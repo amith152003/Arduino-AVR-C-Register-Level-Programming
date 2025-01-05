@@ -2,7 +2,7 @@
 
 ## Bits in Arduino
 Arduino operates on an **8-bit architecture** for its registers and ports. Each register consists of 8 bits, as shown below:
-|-----|---|---|---|---|---|---|---|---|-----|
+
 | MSB | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 | LSB |
 |-----|---|---|---|---|---|---|---|---|-----|
 
