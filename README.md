@@ -635,12 +635,26 @@ In this mode, the 8-bit result is obtained directly by reading **ADCL**, and **A
 
 
 ### How to Use this?
-- Enable the global interrupt (SREG |= (1 << 7); or sei();)
-- Set Refernece voltage pin to 0 (ADMUX -> ref[1:0] to 0)
-- ADLAR is set to 0 //For 10bit
-- Enable ADEN, ADATE, ADIE 
-- Set ADPS[2:0] to desired prescaler value
-- Start convertion by enabling ADSC.
-- Select ADC channel by enabling required MUX[3:0] values in ADMUX register.
-- ISR(ADC_vect){} Interrupt Serive Routine for ADC
+- Configure ADC:
+  - Enable the ADC.
+  - Set the reference voltage to AVCC.
+  - Select the ADC channel.
+  - Set the prescaler for ADC clock.
+- Start ADC Conversion:
+  - Initiate the conversion.
+  - Wait for the conversion to complete.
+  - Read the digital value.
+- Set Up Timer for PWM:
+  - Configure Timer1 for Fast PWM mode.
+  - Set the PWM frequency using ICR1.
+  - Enable the non-inverting mode for OC1A.
+  - Set the clock source for the timer.
+- Output PWM Signal:
+  - Assign the scaled ADC value to the PWM duty cycle register.
+  - Ensure the corresponding PWM output pin is configured as output.
+- Loop to Continuously Update:
+  - Read the ADC value.
+  - Scale it to 8-bit resolution.
+  - Update the PWM duty cycle.
+  - Add a small delay for stabilization.
 
