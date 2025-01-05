@@ -190,7 +190,6 @@ The DDRB register configures whether the pins in port **B** are inputs or output
 
     | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 
     |---|---|---|---|---|---|---|---| 
-    // LOW value in pin B  
 
   - Case 2: HIGH value in pin B
     - **PINB**  
@@ -207,7 +206,6 @@ The DDRB register configures whether the pins in port **B** are inputs or output
 
     | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |  
     |---|---|---|---|---|---|---|---|
-    // HIGH value in pin B 
 
 ---
 
@@ -291,7 +289,7 @@ SREG |= (1 << 7); // sei();
 
   | Bit 7    | Bit 6    | Bit 5    | Bit 4    | Bit 3    | Bit 2    | Bit 1    | Bit 0    |
   |----------|----------|----------|----------|----------|----------|----------|----------|
-  | **COM1A1** | **COM1A0** | **COM1B1** | **COM1B0** |          |          | **WGM11** | **WGM10** |
+  | **COM1A1** | **COM1A0** | **COM1B1** | **COM1B0** |     -    |     -    | **WGM11** | **WGM10** |
 
 
 ###### **COM1A (OC1A Output Pin Control)**
@@ -345,7 +343,7 @@ SREG |= (1 << 7); // sei();
 | 0         | Disable the noise canceler          |
 | 1         | Enable the noise canceler           |
 
----
+
 
 ###### **ICES1 (Input Capture Edge Select)**
 
@@ -354,7 +352,7 @@ SREG |= (1 << 7); // sei();
 | 0         | Capture on falling edge             |
 | 1         | Capture on rising edge              |
 
----
+
 
 ###### **WGM1[3:2] (Waveform Generation Mode)**
 
@@ -365,7 +363,6 @@ SREG |= (1 << 7); // sei();
 | 1         | 0         | CTC (Clear Timer on Compare Match)    |
 | 0         | 1         | Phase Correct PWM                     |
 
----
 
 ###### **CS1[2:0] (Clock Select)**
 
@@ -528,7 +525,6 @@ When **ADLAR** is set to **0**, the 10-bit ADC result is right-adjusted. In this
 
 In this mode, the complete 10-bit result is obtained by reading both **ADCL** and **ADCH**.
 
----
 
 ##### **ADLAR = 1 (Left Adjusted Result)**
 
@@ -570,8 +566,6 @@ In this mode, the 8-bit result is obtained directly by reading **ADCL**, and **A
 | 1111         | 0V (GND)                  |
 
 
----
-
 ### **ADCSRA**
 - **ADCSRA Register Overview**: The **ADCSRA** register controls the operation of the ADC (Analog-to-Digital Converter) in the ATmega328P. It is responsible for enabling the ADC, starting conversions, enabling interrupts, and setting the ADC prescaler to control the ADC conversion speed. This register is essential for configuring and managing ADC operations.
 
@@ -590,16 +584,12 @@ In this mode, the 8-bit result is obtained directly by reading **ADCL**, and **A
   | **ADEN** | **ADSC** | **ADATE** | **ADIF** | **ADIE** | **ADPS2** | **ADPS1** | **ADPS0** |
 
 
----
-
 #### **ADEN (ADC Enable)**
 
 | **ADEN** | **Description**                       |
 |----------|---------------------------------------|
 | 0        | Disable ADC operation                |
 | 1        | Enable ADC operation                 |
-
----
 
 #### **ADSC (ADC Start Conversion)**
 
@@ -608,16 +598,12 @@ In this mode, the 8-bit result is obtained directly by reading **ADCL**, and **A
 | 0        | No conversion in progress            |
 | 1        | Start an ADC conversion              |
 
----
-
 #### **ADATE (ADC Auto Trigger Enable)**
 
 | **ADATE** | **Description**                       |
 |-----------|---------------------------------------|
 | 0         | Auto triggering disabled              |
 | 1         | Enable auto triggering of ADC        |
-
----
 
 #### **ADIF (ADC Interrupt Flag)**
 
@@ -626,8 +612,6 @@ In this mode, the 8-bit result is obtained directly by reading **ADCL**, and **A
 | 0        | ADC conversion is not complete       |
 | 1        | ADC conversion is complete           |
 
----
-
 #### **ADIE (ADC Interrupt Enable)**
 
 | **ADIE** | **Description**                       |
@@ -635,7 +619,6 @@ In this mode, the 8-bit result is obtained directly by reading **ADCL**, and **A
 | 0        | Disable ADC conversion interrupt     |
 | 1        | Enable ADC conversion interrupt      |
 
----
 
 #### **ADPS[2:0] (ADC Prescaler Selection)**
 
@@ -650,7 +633,6 @@ In this mode, the 8-bit result is obtained directly by reading **ADCL**, and **A
 | 1         | 1         | 0         | 64                   |
 | 1         | 1         | 1         | 128                  |
 
----
 
 ### How to Use this?
 - Enable the global interrupt (SREG |= (1 << 7); or sei();)
