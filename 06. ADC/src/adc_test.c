@@ -1,42 +1,51 @@
 #include <avr/io.h>
 #include <util/delay.h>
-#include <avr/interrupt.h>
 
-int main() {
-    // Set the reference voltage to AVCC
-    ADMUX |= (1 << REFS0); // REFS1 is 0, REFS0 is 1 for AVCC as reference
-    
-    // Select ADC channel 0 (ADC0)
-    ADMUX &= ~(1 << MUX3) & ~(1 << MUX2) & ~(1 << MUX1) & ~(1 << MUX0); 
+uint16_t readadc(uint8_t channel) {
+    // Limit channel to valid range (0-7)
+    channel &= 0b00000111;
 
-    // Enable ADC, ADC interrupt, and auto trigger
-    ADCSRA |= (1 << ADEN) | (1 << ADIE) | (1 << ADATE);
+    // Select the channel
+    ADMUX = (ADMUX & 0xF8) | channel;
 
-    // Set ADC prescaler to 16 (ADPS2:0 = 001)
-    ADCSRA |= (1 << ADPS1) | (1 << ADPS0); // Prescaler = 16
-
-    // Start the ADC conversion
+    // Start ADC conversion
     ADCSRA |= (1 << ADSC);
 
-    // Configure Timer1 for Fast PWM mode on OC1A (PB1)
-    TCCR1A |= (1 << COM1A1) | (1 << WGM11);  // Non-inverted PWM, Fast PWM mode (WGM13:0)
-    TCCR1B |= (1 << WGM12) | (1 << WGM13) | (1 << CS11); // Fast PWM, prescaler 8
+    // Wait for conversion to complete
+    while (ADCSRA & (1 << ADSC));
 
-    // Set PB1 as output (OC1A)
-    DDRB |= (1 << DDB1);
-
-    // Set the top value for Timer1 (10-bit resolution for PWM)
-    ICR1 = 1023;  // Top value for 10-bit resolution PWM
-
-    // Enable global interrupts
-    SREG |= (1 << 7);  // Set the global interrupt flag
-
-    while (1) {
-        // Main loop, doing nothing, ADC conversion and ISR handle PWM
-    }
+    return ADC;
 }
 
-// ADC conversion complete ISR
-ISR(ADC_vect) {
-    OCR1A = ADC;  // Set PWM duty cycle based on ADC value (10-bit result)
+int main() {
+    uint8_t pot_val;
+
+    // ADC configuration: Enable ADC, set prescaler to 128
+    ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+
+    // Set reference voltage to AVCC with external capacitor at AREF pin
+    ADMUX |= (1 << REFS0);
+
+    // Configure Timer1 for Fast PWM mode with ICR1 as TOP
+    TCCR1A |= (1 << COM1A1) | (1 << WGM11);  // Non-inverting mode
+    TCCR1B |= (1 << WGM12) | (1 << WGM13) | (1 << CS11);  // Fast PWM with ICR1 as TOP
+
+    // Set PB1 as output for PWM signal (OC1A)
+    DDRB |= (1 << DDB1);
+
+    // Set ICR1 to 255 for 8-bit resolution
+    ICR1 = 255;
+
+    while (1) {
+        // Read ADC value from channel 0 and scale to 8-bit (0-255)
+        pot_val = (uint8_t)((readadc(0) * 255UL) / 1023);
+
+        // Update duty cycle
+        OCR1A = pot_val;
+
+        // Small delay to stabilize ADC readings
+        _delay_ms(100);
+    }
+
+    return 0;
 }
